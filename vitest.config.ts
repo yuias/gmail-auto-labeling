@@ -13,6 +13,8 @@ const dummyBindings = {
   PUSH_AUDIENCE: "https://example.workers.dev/pubsub/push",
   PUSH_SERVICE_ACCOUNT: "gmail-push@dummy.iam.gserviceaccount.com",
   PUSH_JWKS_URL: "http://jwks.test/certs",
+  CONTACT_EMAIL: "contact@example.com",
+  SITE_VERIFICATION: "dummy-site-verification-token",
 };
 
 export default defineConfig({

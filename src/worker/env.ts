@@ -9,4 +9,6 @@ export interface Env {
   PUSH_AUDIENCE: string;
   PUSH_SERVICE_ACCOUNT: string;
   PUSH_JWKS_URL?: string; // tests only; defaults to Google's JWKS
+  CONTACT_EMAIL?: string; // optional; shown on the public pages when set
+  SITE_VERIFICATION?: string; // optional; Search Console verification meta tag
 }

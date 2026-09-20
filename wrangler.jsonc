@@ -6,5 +6,6 @@
   "compatibility_flags": ["nodejs_compat"],
   "observability": { "enabled": true },
   "durable_objects": { "bindings": [{ "name": "MAILBOX", "class_name": "Mailbox" }] },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Mailbox"] }]
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Mailbox"] }],
+  "triggers": { "crons": ["17 3 * * *"] }
 }

@@ -28,6 +28,11 @@ const QUARANTINE_THRESHOLD = 3;
 // cursor; the next redelivery or cron tick picks up where it left off.
 const MAX_MESSAGES_PER_SYNC = 20;
 
+// How far out to set the drain alarm after a truncated sync. Short enough
+// that a large backlog clears in well under a minute, long enough not to
+// hammer the Gmail API between rounds.
+const DRAIN_ALARM_DELAY_MS = 5000;
+
 export interface MailboxDeps {
   gmail: GmailApi;
   jev: SystemOneCaller;
@@ -100,7 +105,26 @@ export class Mailbox extends DurableObject<Env> {
   }
 
   async sync(): Promise<SyncResult> {
-    return this.run(() => this.syncLocked());
+    const result = await this.run(() => this.syncLocked());
+    // A capped run leaves backlog behind; schedule the alarm to continue it
+    // without holding open whichever caller (push handler or a previous
+    // alarm) invoked this sync. Uses wall-clock time, not deps.now(), since
+    // alarms are scheduled against the real clock even when tests fake now()
+    // for storage timestamps.
+    if (result.truncated) {
+      await this.ctx.storage.setAlarm(Date.now() + DRAIN_ALARM_DELAY_MS);
+    }
+    return result;
+  }
+
+  // Runs a further round of sync() for a truncated backlog. Goes through the
+  // same public sync() (and therefore the same mutex and reschedule logic),
+  // so it can never run concurrently with a push-triggered sync and stops
+  // scheduling itself once a round comes back untruncated. A thrown error
+  // propagates to workerd's built-in alarm retry; the processed-id dedup
+  // makes a retried round idempotent.
+  async alarm(): Promise<void> {
+    await this.sync();
   }
 
   private async syncLocked(): Promise<SyncResult> {
