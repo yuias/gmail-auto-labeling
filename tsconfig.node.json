@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "types": ["node"],
+    "lib": ["ES2022"],
+    "skipLibCheck": true
+  },
+  "include": [
+    "scripts/**/*",
+    "src/core/**/*",
+    "src/gmail/**/*",
+    "test/helpers/**/*",
+    "test/unit/**/*",
+    "config/*.json"
+  ]
+}

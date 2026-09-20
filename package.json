@@ -1,0 +1,37 @@
+{
+  "name": "gmail-auto-labeling",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@11.21.0",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.node.json --noEmit",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "test": "vitest run --passWithNoTests",
+    "check": "pnpm lint && pnpm typecheck && pnpm test",
+    "dev": "wrangler dev",
+    "auth:google": "tsx scripts/auth-google.ts",
+    "eval": "tsx scripts/eval.ts",
+    "setup:gcp": "tsx scripts/setup-gcp.ts",
+    "deploy": "tsx scripts/deploy.ts",
+    "watch:start": "tsx scripts/watch-start.ts"
+  },
+  "dependencies": {
+    "@typesafe-ai/sdk": "^0.6.0",
+    "jose": "^6.2.12",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.14",
+    "@cloudflare/vitest-pool-workers": "^0.22.0",
+    "@cloudflare/workers-types": "^5.20260919.1",
+    "@types/node": "^26.6.2",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11",
+    "wrangler": "^4.135.0"
+  }
+}

@@ -146,3 +146,12 @@ vite.config.ts.timestamp-*
 .agents/
 .claude/
 skills-lock.json
+
+# Secrets and local runtime config
+.secrets.env
+!.secrets.env.example
+.dev.vars
+.dev.vars.*
+
+# Wrangler local state
+.wrangler/
