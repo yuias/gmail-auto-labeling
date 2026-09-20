@@ -1,0 +1,10 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "gmail-auto-labeling",
+  "main": "src/worker/index.ts",
+  "compatibility_date": "2026-07-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "durable_objects": { "bindings": [{ "name": "MAILBOX", "class_name": "Mailbox" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Mailbox"] }]
+}
