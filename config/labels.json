@@ -1,0 +1,110 @@
+{
+  "model": "jev-latest",
+  "body": { "maxChars": 8000 },
+  "category": {
+    "instructions": "Classify this email into the single category that best describes its main purpose. The state holds the subject, the sender, header-derived bulk-mail signals, and a plain-text body that may be truncated. The mail may be in Japanese or another language; judge by purpose, not by language. Transactional mail often carries a promotional footer; classify by the main purpose, not the footer. Choose 'other' when none of the categories fits.",
+    "maxLabels": 2,
+    "thresholds": { "primary": 0.5, "secondary": 0.25 },
+    "options": {
+      "receipt": {
+        "label": "Receipt",
+        "criteria": {
+          "focus": "Confirmation that money changed hands or is owed: receipts, order and purchase confirmations, payment notices, invoices, subscription renewal charges, refund notices, billing statements for a specific charge.",
+          "not_for": "Marketing mail that only mentions prices or a past purchase; shipping updates that merely repeat order details; account notices with no transaction.",
+          "examples": [
+            "Your order #12345 has been confirmed",
+            "Receipt for your payment",
+            "Invoice for September is ready",
+            "Your subscription has been renewed"
+          ]
+        }
+      },
+      "shipped": {
+        "label": "Shipped",
+        "criteria": {
+          "focus": "Status of a physical delivery: item shipped, out for delivery, delivered, delayed, held at a pickup point, tracking number provided, delivery date changed.",
+          "not_for": "Order confirmations that only promise a future shipment; promotions about shipping offers or free delivery.",
+          "examples": [
+            "Your package has shipped",
+            "Out for delivery today",
+            "Your parcel was delivered",
+            "Delivery rescheduled"
+          ]
+        }
+      },
+      "scheduled": {
+        "label": "Scheduled",
+        "criteria": {
+          "focus": "A reservation or appointment held by the recipient with a specific date and time: hotel, flight, train, bus, restaurant, salon, clinic, cinema, event tickets, meeting confirmations; reminders, changes, or cancellations of such a booking. A booking confirmation that also charges money is both scheduled and a receipt.",
+          "not_for": "General invitations to browse or book something; marketing for events with no booking held by the recipient; calendar spam.",
+          "examples": [
+            "Your reservation is confirmed for 14 October",
+            "Reminder: appointment tomorrow at 10:00",
+            "Your flight itinerary",
+            "Your booking has been cancelled"
+          ]
+        }
+      },
+      "ads": {
+        "label": "Ads",
+        "criteria": {
+          "focus": "Promotional or marketing mail: sales, campaigns, coupons, points offers, newsletters whose purpose is to promote products or services, bulk product announcements, re-engagement mail.",
+          "not_for": "Transactional mail (receipts, shipping, bookings) even when it has a promotional footer; personal mail; account security notices; service status notices.",
+          "examples": [
+            "50% off this weekend only",
+            "New arrivals you will love",
+            "Earn double points this month",
+            "Weekly deals newsletter"
+          ]
+        }
+      },
+      "other": {
+        "label": null,
+        "criteria": "None of the above: personal mail, account and security notices, password resets, social notifications, system and service messages, and anything that does not fit a category."
+      }
+    }
+  },
+  "flags": {
+    "action": {
+      "label": "Action",
+      "threshold": 0.7,
+      "instructions": "Decide whether the recipient must do something in response to this email. Answer high when a reply is expected from the recipient or a specific task is required of them, such as confirming, approving, paying, submitting, verifying, or choosing a date. Answer low when nothing is required or the request is optional.",
+      "criteria": {
+        "focus": "A reply is expected from the recipient; a deadline applies to the recipient; a required step such as confirming an account, completing a payment, uploading a document, signing, or answering a question addressed to the recipient.",
+        "not_for": "Optional surveys and feedback requests; 'no reply needed' notices; purely informational updates; marketing calls to action such as 'shop now' or 'learn more'; automatic confirmations that need no response.",
+        "examples": {
+          "high": [
+            "Please confirm your attendance by Friday",
+            "Your payment failed, update your card to keep your subscription",
+            "Action required: verify your email address"
+          ],
+          "low": [
+            "Your order has shipped",
+            "How did we do? Take a 2-minute survey",
+            "Monthly newsletter"
+          ]
+        }
+      }
+    },
+    "human": {
+      "label": "Human",
+      "threshold": 0.7,
+      "instructions": "Decide whether this email was written by a person to the recipient, rather than generated by a system or sent in bulk. Use the bulk signals in the state: a List-Unsubscribe header, Precedence bulk or list, or an Auto-Submitted value normally indicate automated mail. A personal sender address and text that responds to the recipient specifically indicate a person.",
+      "criteria": {
+        "focus": "Individually written text addressed to the recipient; a reply in an ongoing conversation; a message from an individual's address with a personal tone; questions or remarks that only make sense for this recipient.",
+        "not_for": "Automated notifications, templated transactional mail, newsletters, marketing, system alerts, calendar invitations generated by software, and bulk mail, even when they address the recipient by name.",
+        "examples": {
+          "high": [
+            "Hi, thanks for yesterday. Could you send me the file we talked about?",
+            "Following up on your question from last week"
+          ],
+          "low": [
+            "Your verification code is 123456",
+            "Welcome to our newsletter",
+            "Your order has been confirmed"
+          ]
+        }
+      }
+    }
+  }
+}
