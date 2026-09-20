@@ -116,27 +116,63 @@ export class GmailClient implements GmailApi {
     await this.request("POST", `/messages/${id}/modify`, { body: { addLabelIds } });
   }
 
-  async listHistory(_params: {
+  async listHistory(params: {
     startHistoryId: string;
     labelId?: string;
     historyTypes?: string[];
   }): Promise<HistoryResult> {
-    throw new Error("not implemented");
+    const messages = new Map<string, { id: string; threadId: string; labelIds: string[] }>();
+    let historyId = "";
+    let pageToken: string | undefined;
+    // A page token that never clears would loop until the caller's request
+    // budget runs out. Failing instead leaves the cursor untouched for a retry.
+    let pagesLeft = 50;
+    do {
+      if (pagesLeft-- === 0) {
+        throw new Error("gmail: history pagination did not terminate");
+      }
+      const page = await this.request<{
+        history?: Array<{
+          messagesAdded?: Array<{ message: { id: string; threadId: string; labelIds?: string[] } }>;
+        }>;
+        historyId: string;
+        nextPageToken?: string;
+      }>("GET", "/history", {
+        query: {
+          startHistoryId: params.startHistoryId,
+          labelId: params.labelId,
+          historyTypes: params.historyTypes,
+          pageToken,
+        },
+      });
+      for (const entry of page.history ?? []) {
+        for (const added of entry.messagesAdded ?? []) {
+          const { id, threadId, labelIds } = added.message;
+          if (!messages.has(id)) messages.set(id, { id, threadId, labelIds: labelIds ?? [] });
+        }
+      }
+      historyId = page.historyId;
+      pageToken = page.nextPageToken;
+    } while (pageToken);
+    return { historyId, messagesAdded: [...messages.values()] };
   }
 
   async listLabels(): Promise<GmailLabel[]> {
-    throw new Error("not implemented");
+    const result = await this.request<{ labels?: GmailLabel[] }>("GET", "/labels");
+    return result.labels ?? [];
   }
 
-  async createLabel(_name: string): Promise<GmailLabel> {
-    throw new Error("not implemented");
+  async createLabel(name: string): Promise<GmailLabel> {
+    return this.request("POST", "/labels", {
+      body: { name, labelListVisibility: "labelShow", messageListVisibility: "show" },
+    });
   }
 
-  async watch(_body: {
+  async watch(body: {
     topicName: string;
     labelIds: string[];
     labelFilterBehavior: "INCLUDE" | "EXCLUDE";
   }): Promise<{ historyId: string; expiration: string }> {
-    throw new Error("not implemented");
+    return this.request("POST", "/watch", { body });
   }
 }

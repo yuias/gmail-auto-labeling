@@ -140,16 +140,142 @@ describe("GmailClient", () => {
     });
   });
 
-  it("declares the not-yet-implemented methods, which throw for now", async () => {
+  it("listHistory: follows nextPageToken and dedupes messages, keeping the last page's historyId", async () => {
     const tokens = new FakeTokens();
-    const { impl } = fakeFetch([]);
+    const { impl, calls } = fakeFetch([
+      {
+        status: 200,
+        body: {
+          history: [
+            {
+              messagesAdded: [
+                { message: { id: "m1", threadId: "t1", labelIds: ["INBOX"] } },
+                { message: { id: "m2", threadId: "t2", labelIds: ["INBOX"] } },
+              ],
+            },
+          ],
+          historyId: "100",
+          nextPageToken: "page2",
+        },
+      },
+      {
+        status: 200,
+        body: {
+          history: [
+            {
+              // m2 repeats across pages; the first occurrence must win.
+              messagesAdded: [
+                { message: { id: "m2", threadId: "t2", labelIds: ["INBOX", "UNREAD"] } },
+                { message: { id: "m3", threadId: "t3", labelIds: [] } },
+              ],
+            },
+          ],
+          historyId: "200",
+        },
+      },
+    ]);
     const client = new GmailClient(tokens, impl);
 
-    await expect(client.listHistory({ startHistoryId: "1" })).rejects.toThrow("not implemented");
-    await expect(client.listLabels()).rejects.toThrow("not implemented");
-    await expect(client.createLabel("Label")).rejects.toThrow("not implemented");
-    await expect(
-      client.watch({ topicName: "t", labelIds: ["INBOX"], labelFilterBehavior: "INCLUDE" }),
-    ).rejects.toThrow("not implemented");
+    const result = await client.listHistory({
+      startHistoryId: "50",
+      labelId: "INBOX",
+      historyTypes: ["messageAdded"],
+    });
+
+    expect(result).toEqual({
+      historyId: "200",
+      messagesAdded: [
+        { id: "m1", threadId: "t1", labelIds: ["INBOX"] },
+        { id: "m2", threadId: "t2", labelIds: ["INBOX"] },
+        { id: "m3", threadId: "t3", labelIds: [] },
+      ],
+    });
+    expect(calls).toHaveLength(2);
+    const firstUrl = new URL(calls[0].url);
+    expect(firstUrl.pathname).toBe("/gmail/v1/users/me/history");
+    expect(firstUrl.searchParams.get("startHistoryId")).toBe("50");
+    expect(firstUrl.searchParams.get("labelId")).toBe("INBOX");
+    expect(firstUrl.searchParams.getAll("historyTypes")).toEqual(["messageAdded"]);
+    expect(firstUrl.searchParams.get("pageToken")).toBeNull();
+    const secondUrl = new URL(calls[1].url);
+    expect(secondUrl.searchParams.get("pageToken")).toBe("page2");
+  });
+
+  it("listHistory: a response without history still returns an empty list and the historyId", async () => {
+    const tokens = new FakeTokens();
+    const { impl } = fakeFetch([{ status: 200, body: { historyId: "42" } }]);
+    const client = new GmailClient(tokens, impl);
+
+    expect(await client.listHistory({ startHistoryId: "1" })).toEqual({
+      historyId: "42",
+      messagesAdded: [],
+    });
+  });
+
+  it("listHistory: 404 propagates as GmailApiError", async () => {
+    const tokens = new FakeTokens();
+    const { impl } = fakeFetch([
+      { status: 404, body: { error: "not found" } },
+      { status: 404, body: { error: "not found" } },
+    ]);
+    const client = new GmailClient(tokens, impl);
+
+    await expect(client.listHistory({ startHistoryId: "1" })).rejects.toMatchObject({
+      status: 404,
+    });
+  });
+
+  it("listLabels: returns the labels array", async () => {
+    const tokens = new FakeTokens();
+    const { impl, calls } = fakeFetch([
+      { status: 200, body: { labels: [{ id: "Label_1", name: "Receipt" }] } },
+    ]);
+    const client = new GmailClient(tokens, impl);
+
+    expect(await client.listLabels()).toEqual([{ id: "Label_1", name: "Receipt" }]);
+    const url = new URL(calls[0].url);
+    expect(url.pathname).toBe("/gmail/v1/users/me/labels");
+  });
+
+  it("createLabel: body includes the visibility fields", async () => {
+    const tokens = new FakeTokens();
+    const { impl, calls } = fakeFetch([{ status: 200, body: { id: "Label_1", name: "Receipt" } }]);
+    const client = new GmailClient(tokens, impl);
+
+    const label = await client.createLabel("Receipt");
+
+    expect(label).toEqual({ id: "Label_1", name: "Receipt" });
+    expect(calls[0].method).toBe("POST");
+    const url = new URL(calls[0].url);
+    expect(url.pathname).toBe("/gmail/v1/users/me/labels");
+    expect(calls[0].body).toEqual({
+      name: "Receipt",
+      labelListVisibility: "labelShow",
+      messageListVisibility: "show",
+    });
+  });
+
+  it("watch: posts the three fields and returns historyId/expiration", async () => {
+    const tokens = new FakeTokens();
+    const { impl, calls } = fakeFetch([
+      { status: 200, body: { historyId: "1", expiration: "1700000000000" } },
+    ]);
+    const client = new GmailClient(tokens, impl);
+
+    const result = await client.watch({
+      topicName: "projects/p/topics/gmail",
+      labelIds: ["INBOX"],
+      labelFilterBehavior: "INCLUDE",
+    });
+
+    expect(result).toEqual({ historyId: "1", expiration: "1700000000000" });
+    expect(calls[0].method).toBe("POST");
+    const url = new URL(calls[0].url);
+    expect(url.pathname).toBe("/gmail/v1/users/me/watch");
+    expect(calls[0].body).toEqual({
+      topicName: "projects/p/topics/gmail",
+      labelIds: ["INBOX"],
+      labelFilterBehavior: "INCLUDE",
+    });
   });
 });
