@@ -53,19 +53,20 @@
       "ads": {
         "label": "ads",
         "criteria": {
-          "focus": "Promotional or marketing mail: sales, campaigns, coupons, points offers, newsletters whose purpose is to promote products or services, bulk product announcements, re-engagement mail.",
-          "not_for": "Transactional mail (receipts, shipping, bookings) even when it has a promotional footer; personal mail; account security notices; service status notices.",
+          "focus": "Promotional or marketing mail the sender chose to send: sales, campaigns, coupons, points offers, newsletters whose purpose is to promote products or services, bulk product announcements, re-engagement mail.",
+          "not_for": "Transactional mail (receipts, shipping, bookings) even when it has a promotional footer; personal mail; account security notices; service status notices; alerts that report a match to a condition the recipient set up, such as saved-search results, registered property or listing criteria, watchlist, stock and price alerts, and new-arrival or restock notices for a seller, shop, circle, or artist the recipient follows, even when the alert lists products, prices, and links to buy.",
           "examples": [
             "50% off this weekend only",
             "New arrivals you will love",
             "Earn double points this month",
-            "Weekly deals newsletter"
+            "Weekly deals newsletter",
+            "Recommended for you, picked by our editors"
           ]
         }
       },
       "other": {
         "label": null,
-        "criteria": "None of the above: personal mail, account and security notices, password resets, social notifications, system and service messages, and anything that does not fit a category."
+        "criteria": "None of the above: personal mail, account and security notices, password resets, social notifications, system and service messages, alerts the recipient asked for by registering a search, a listing condition, or a seller or circle to follow (new matching items, new listings, restocks, price or stock changes), and anything that does not fit a category."
       }
     }
   },
