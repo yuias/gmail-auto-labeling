@@ -71,7 +71,7 @@
   },
   "flags": {
     "action": {
-      "label": "Respond",
+      "label": "Action",
       "threshold": 0.7,
       "instructions": "Decide whether the recipient must do something in response to this email. Answer high when a reply is expected from the recipient or a specific task is required of them, such as confirming, approving, paying, submitting, verifying, or choosing a date. Answer low when nothing is required or the request is optional.",
       "criteria": {

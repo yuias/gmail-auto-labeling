@@ -97,7 +97,7 @@ describe("Mailbox label ids", () => {
         Shipped: "label_Shipped",
         Booking: "label_Booking",
         ads: "label_ads",
-        Respond: "label_Respond",
+        Action: "label_Action",
         Human: "label_Human",
       });
       const createCalls = gmail.calls.filter((c) => c.method === "createLabel");
@@ -105,7 +105,7 @@ describe("Mailbox label ids", () => {
         "Shipped",
         "Booking",
         "ads",
-        "Respond",
+        "Action",
         "Human",
       ]);
       const callsAfterFirst = gmail.calls.length;
@@ -124,7 +124,7 @@ describe("Mailbox label ids", () => {
       { id: "id_shipped", name: "Shipped" },
       { id: "id_scheduled", name: "Booking" },
       { id: "id_ads", name: "ads" },
-      { id: "id_action", name: "Respond" },
+      { id: "id_action", name: "Action" },
       { id: "id_human", name: "Human" },
     ];
     await runInDurableObject(stub, async (instance: Mailbox, state) => {
@@ -136,7 +136,7 @@ describe("Mailbox label ids", () => {
         Shipped: "id_shipped",
         Booking: "id_scheduled",
         ads: "id_ads",
-        Respond: "id_action",
+        Action: "id_action",
         Human: "id_human",
       } as unknown as Record<string, string>);
 
@@ -154,7 +154,7 @@ describe("Mailbox label ids", () => {
       { id: "id_shipped", name: "Shipped" },
       { id: "id_scheduled", name: "Booking" },
       { id: "id_ads", name: "ads" },
-      { id: "id_action", name: "Respond" },
+      { id: "id_action", name: "Action" },
       { id: "id_human", name: "Human" },
     ];
     await runInDurableObject(stub, async (instance: Mailbox) => {

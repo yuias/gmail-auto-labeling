@@ -314,7 +314,7 @@ describe("Mailbox sync: failure handling", () => {
       { id: "label_Shipped", name: "Shipped" },
       { id: "label_Booking", name: "Booking" },
       { id: "label_ads", name: "ads" },
-      { id: "label_Respond", name: "Respond" },
+      { id: "label_Action", name: "Action" },
       { id: "label_Human", name: "Human" },
     ];
     gmail.messages.set(
@@ -347,7 +347,7 @@ describe("Mailbox sync: failure handling", () => {
         Shipped: "label_Shipped",
         Booking: "label_Booking",
         ads: "label_ads",
-        Respond: "label_Respond",
+        Action: "label_Action",
         Human: "label_Human",
       });
       instance.deps = fakeDeps({ gmail, jev });
@@ -376,7 +376,7 @@ describe("Mailbox sync: failure handling", () => {
       { id: "label_Shipped", name: "Shipped" },
       { id: "label_Booking", name: "Booking" },
       { id: "label_ads", name: "ads" },
-      { id: "label_Respond", name: "Respond" },
+      { id: "label_Action", name: "Action" },
       { id: "label_Human", name: "Human" },
     ];
     // A deleted label id, still cached, fails modifyMessage no matter which
@@ -417,7 +417,7 @@ describe("Mailbox sync: failure handling", () => {
         Shipped: "label_Shipped",
         Booking: "label_Booking",
         ads: "label_ads",
-        Respond: "label_Respond",
+        Action: "label_Action",
         Human: "label_Human",
       });
       instance.deps = fakeDeps({ gmail, jev });
