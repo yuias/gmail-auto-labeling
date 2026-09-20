@@ -1,16 +1,21 @@
 {
   "model": "jev-latest",
-  "body": { "maxChars": 8000 },
+  "body": {
+    "maxChars": 8000
+  },
   "category": {
     "instructions": "Classify this email into the single category that best describes its main purpose. The state holds the subject, the sender, header-derived bulk-mail signals, and a plain-text body that may be truncated. The mail may be in Japanese or another language; judge by purpose, not by language. Transactional mail often carries a promotional footer; classify by the main purpose, not the footer. Choose 'other' when none of the categories fits.",
     "maxLabels": 2,
-    "thresholds": { "primary": 0.5, "secondary": 0.25 },
+    "thresholds": {
+      "primary": 0.5,
+      "secondary": 0.25
+    },
     "options": {
       "receipt": {
         "label": "Receipt",
         "criteria": {
           "focus": "Confirmation that money changed hands or is owed: receipts, order and purchase confirmations, payment notices, invoices, subscription renewal charges, refund notices, billing statements for a specific charge.",
-          "not_for": "Marketing mail that only mentions prices or a past purchase; shipping updates that merely repeat order details; account notices with no transaction.",
+          "not_for": "Marketing mail that only mentions prices or a past purchase; shipping updates that merely repeat order details; account notices with no transaction; loyalty point awards, mileage credits, and reward balance notices, which move no money.",
           "examples": [
             "Your order #12345 has been confirmed",
             "Receipt for your payment",
@@ -71,7 +76,7 @@
       "instructions": "Decide whether the recipient must do something in response to this email. Answer high when a reply is expected from the recipient or a specific task is required of them, such as confirming, approving, paying, submitting, verifying, or choosing a date. Answer low when nothing is required or the request is optional.",
       "criteria": {
         "focus": "A reply is expected from the recipient; a deadline applies to the recipient; a required step such as confirming an account, completing a payment, uploading a document, signing, or answering a question addressed to the recipient.",
-        "not_for": "Optional surveys and feedback requests; 'no reply needed' notices; purely informational updates; marketing calls to action such as 'shop now' or 'learn more'; automatic confirmations that need no response.",
+        "not_for": "Optional surveys and feedback requests; 'no reply needed' notices; purely informational updates; marketing calls to action such as 'shop now' or 'learn more'; automatic confirmations that need no response; notices that something has already happened and is settled, such as an account, project, or service having been closed or deleted.",
         "examples": {
           "high": [
             "Please confirm your attendance by Friday",
@@ -81,7 +86,8 @@
           "low": [
             "Your order has shipped",
             "How did we do? Take a 2-minute survey",
-            "Monthly newsletter"
+            "Monthly newsletter",
+            "Your project has been shut down"
           ]
         }
       }
