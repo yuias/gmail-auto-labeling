@@ -38,7 +38,7 @@
         }
       },
       "scheduled": {
-        "label": "Scheduled",
+        "label": "Booking",
         "criteria": {
           "focus": "A reservation or appointment held by the recipient with a specific date and time: hotel, flight, train, bus, restaurant, salon, clinic, cinema, event tickets, meeting confirmations; reminders, changes, or cancellations of such a booking. A booking confirmation that also charges money is both scheduled and a receipt.",
           "not_for": "General invitations to browse or book something; marketing for events with no booking held by the recipient; calendar spam.",
@@ -51,7 +51,7 @@
         }
       },
       "ads": {
-        "label": "Ads",
+        "label": "ads",
         "criteria": {
           "focus": "Promotional or marketing mail: sales, campaigns, coupons, points offers, newsletters whose purpose is to promote products or services, bulk product announcements, re-engagement mail.",
           "not_for": "Transactional mail (receipts, shipping, bookings) even when it has a promotional footer; personal mail; account security notices; service status notices.",
@@ -71,7 +71,7 @@
   },
   "flags": {
     "action": {
-      "label": "Action",
+      "label": "Respond",
       "threshold": 0.7,
       "instructions": "Decide whether the recipient must do something in response to this email. Answer high when a reply is expected from the recipient or a specific task is required of them, such as confirming, approving, paying, submitting, verifying, or choosing a date. Answer low when nothing is required or the request is optional.",
       "criteria": {

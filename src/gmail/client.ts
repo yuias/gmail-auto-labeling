@@ -57,7 +57,9 @@ function buildQuery(query: Record<string, QueryValue> | undefined): string {
 export class GmailClient implements GmailApi {
   constructor(
     private readonly tokens: TokenSource,
-    private readonly fetchImpl: typeof fetch = fetch,
+    // Bound to the global object: the Workers runtime rejects its own `fetch`
+    // when it is invoked as a method of another object.
+    private readonly fetchImpl: typeof fetch = fetch.bind(globalThis),
     private readonly baseUrl = "https://gmail.googleapis.com/gmail/v1/users/me",
   ) {}
 

@@ -312,9 +312,9 @@ describe("Mailbox sync: failure handling", () => {
     gmail.labels = [
       { id: "label_Receipt_new", name: "Receipt" },
       { id: "label_Shipped", name: "Shipped" },
-      { id: "label_Scheduled", name: "Scheduled" },
-      { id: "label_Ads", name: "Ads" },
-      { id: "label_Action", name: "Action" },
+      { id: "label_Booking", name: "Booking" },
+      { id: "label_ads", name: "ads" },
+      { id: "label_Respond", name: "Respond" },
       { id: "label_Human", name: "Human" },
     ];
     gmail.messages.set(
@@ -345,9 +345,9 @@ describe("Mailbox sync: failure handling", () => {
       await state.storage.put("labelIds", {
         Receipt: "label_Receipt_stale",
         Shipped: "label_Shipped",
-        Scheduled: "label_Scheduled",
-        Ads: "label_Ads",
-        Action: "label_Action",
+        Booking: "label_Booking",
+        ads: "label_ads",
+        Respond: "label_Respond",
         Human: "label_Human",
       });
       instance.deps = fakeDeps({ gmail, jev });
@@ -374,9 +374,9 @@ describe("Mailbox sync: failure handling", () => {
     gmail.labels = [
       { id: "label_Receipt_new", name: "Receipt" },
       { id: "label_Shipped", name: "Shipped" },
-      { id: "label_Scheduled", name: "Scheduled" },
-      { id: "label_Ads", name: "Ads" },
-      { id: "label_Action", name: "Action" },
+      { id: "label_Booking", name: "Booking" },
+      { id: "label_ads", name: "ads" },
+      { id: "label_Respond", name: "Respond" },
       { id: "label_Human", name: "Human" },
     ];
     // A deleted label id, still cached, fails modifyMessage no matter which
@@ -415,9 +415,9 @@ describe("Mailbox sync: failure handling", () => {
       await state.storage.put("labelIds", {
         Receipt: "label_Receipt_stale",
         Shipped: "label_Shipped",
-        Scheduled: "label_Scheduled",
-        Ads: "label_Ads",
-        Action: "label_Action",
+        Booking: "label_Booking",
+        ads: "label_ads",
+        Respond: "label_Respond",
         Human: "label_Human",
       });
       instance.deps = fakeDeps({ gmail, jev });

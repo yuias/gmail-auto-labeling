@@ -95,17 +95,17 @@ describe("Mailbox label ids", () => {
       expect(map).toEqual({
         Receipt: "existing_receipt",
         Shipped: "label_Shipped",
-        Scheduled: "label_Scheduled",
-        Ads: "label_Ads",
-        Action: "label_Action",
+        Booking: "label_Booking",
+        ads: "label_ads",
+        Respond: "label_Respond",
         Human: "label_Human",
       });
       const createCalls = gmail.calls.filter((c) => c.method === "createLabel");
       expect(createCalls.map((c) => c.args[0])).toEqual([
         "Shipped",
-        "Scheduled",
-        "Ads",
-        "Action",
+        "Booking",
+        "ads",
+        "Respond",
         "Human",
       ]);
       const callsAfterFirst = gmail.calls.length;
@@ -122,9 +122,9 @@ describe("Mailbox label ids", () => {
     gmail.labels = [
       { id: "id_receipt", name: "Receipt" },
       { id: "id_shipped", name: "Shipped" },
-      { id: "id_scheduled", name: "Scheduled" },
-      { id: "id_ads", name: "Ads" },
-      { id: "id_action", name: "Action" },
+      { id: "id_scheduled", name: "Booking" },
+      { id: "id_ads", name: "ads" },
+      { id: "id_action", name: "Respond" },
       { id: "id_human", name: "Human" },
     ];
     await runInDurableObject(stub, async (instance: Mailbox, state) => {
@@ -134,9 +134,9 @@ describe("Mailbox label ids", () => {
       await state.storage.put("labelIds", {
         Receipt: 123,
         Shipped: "id_shipped",
-        Scheduled: "id_scheduled",
-        Ads: "id_ads",
-        Action: "id_action",
+        Booking: "id_scheduled",
+        ads: "id_ads",
+        Respond: "id_action",
         Human: "id_human",
       } as unknown as Record<string, string>);
 
@@ -152,9 +152,9 @@ describe("Mailbox label ids", () => {
     gmail.labels = [
       { id: "id_receipt", name: "Receipt" },
       { id: "id_shipped", name: "Shipped" },
-      { id: "id_scheduled", name: "Scheduled" },
-      { id: "id_ads", name: "Ads" },
-      { id: "id_action", name: "Action" },
+      { id: "id_scheduled", name: "Booking" },
+      { id: "id_ads", name: "ads" },
+      { id: "id_action", name: "Respond" },
       { id: "id_human", name: "Human" },
     ];
     await runInDurableObject(stub, async (instance: Mailbox) => {
