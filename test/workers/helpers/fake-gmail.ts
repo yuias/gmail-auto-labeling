@@ -22,18 +22,26 @@ export class FakeGmailApi implements GmailApi {
   watchResult: { historyId: string; expiration: string } = { historyId: "1", expiration: "0" };
   // message id -> label ids added via modifyMessage, in call order.
   modifiedLabels = new Map<string, string[]>();
+  // Label ids that make modifyMessage throw 400, regardless of which message
+  // sends them: models a label deleted out from under a stale cached id.
+  staleLabelIds = new Set<string>();
 
   private readonly failures = new Map<string, Error>();
 
-  failNext(method: string, error: Error): void {
-    this.failures.set(method, error);
+  // Queues a one-shot error for the next call to `method`. When `forId` is
+  // given, only a call whose first argument equals it is affected, so a test
+  // can fail message B's modifyMessage while message A's still succeeds.
+  failNext(method: string, error: Error, forId?: string): void {
+    this.failures.set(`${method}:${forId ?? "*"}`, error);
   }
 
   private record(method: string, args: unknown[]): void {
     this.calls.push({ method, args });
-    const error = this.failures.get(method);
+    const id = typeof args[0] === "string" ? args[0] : undefined;
+    const key = id !== undefined && this.failures.has(`${method}:${id}`) ? id : "*";
+    const error = this.failures.get(`${method}:${key}`);
     if (error) {
-      this.failures.delete(method);
+      this.failures.delete(`${method}:${key}`);
       throw error;
     }
   }
@@ -62,6 +70,9 @@ export class FakeGmailApi implements GmailApi {
 
   async modifyMessage(id: string, addLabelIds: string[]): Promise<void> {
     this.record("modifyMessage", [id, addLabelIds]);
+    if (addLabelIds.some((labelId) => this.staleLabelIds.has(labelId))) {
+      throw new GmailApiError(400, "unknown label id", `/messages/${id}/modify`);
+    }
     const existing = this.modifiedLabels.get(id) ?? [];
     this.modifiedLabels.set(id, [...existing, ...addLabelIds]);
   }

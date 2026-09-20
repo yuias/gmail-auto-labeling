@@ -116,6 +116,36 @@ describe("Mailbox label ids", () => {
     });
   });
 
+  it("treats a non-string cached label id as a cache miss and rebuilds", async () => {
+    const stub = freshStub("labels-bad-cache-value");
+    const gmail = new FakeGmailApi();
+    gmail.labels = [
+      { id: "id_receipt", name: "Receipt" },
+      { id: "id_shipped", name: "Shipped" },
+      { id: "id_scheduled", name: "Scheduled" },
+      { id: "id_ads", name: "Ads" },
+      { id: "id_action", name: "Action" },
+      { id: "id_human", name: "Human" },
+    ];
+    await runInDurableObject(stub, async (instance: Mailbox, state) => {
+      instance.deps = fakeDeps({ gmail });
+      // A corrupt cache entry (e.g. from a schema change) should not reach
+      // modifyMessage as a label id.
+      await state.storage.put("labelIds", {
+        Receipt: 123,
+        Shipped: "id_shipped",
+        Scheduled: "id_scheduled",
+        Ads: "id_ads",
+        Action: "id_action",
+        Human: "id_human",
+      } as unknown as Record<string, string>);
+
+      const map = await instance.ensureLabelIds();
+      expect(map.Receipt).toBe("id_receipt");
+      expect(gmail.calls.filter((c) => c.method === "listLabels")).toHaveLength(1);
+    });
+  });
+
   it("rebuildLabelIds re-lists even when a cached map is present", async () => {
     const stub = freshStub("labels-rebuild");
     const gmail = new FakeGmailApi();
@@ -195,15 +225,5 @@ describe("Mailbox renewWatch", () => {
       return state.storage.get("cursor");
     });
     expect(cursor).toBe("555");
-  });
-});
-
-describe("Mailbox sync", () => {
-  it("is not implemented yet", async () => {
-    const stub = freshStub("sync-not-implemented");
-    await runInDurableObject(stub, async (instance: Mailbox) => {
-      instance.deps = fakeDeps();
-      await expect(instance.sync()).rejects.toThrow("not implemented");
-    });
   });
 });
