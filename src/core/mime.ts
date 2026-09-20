@@ -160,3 +160,23 @@ export function extractBody(payload: GmailPart | undefined): ExtractedBody {
   if (payload) walk(payload);
   return { text, html };
 }
+
+// Gmail delivers plus-addressed and dotted variants of the same account to one
+// mailbox, and treats googlemail.com as gmail.com, so those forms must compare
+// equal. Dots stay significant on every other domain.
+export function normalizeAddress(address: string): string {
+  const lower = address.trim().toLowerCase();
+  const at = lower.lastIndexOf("@");
+  if (at <= 0) return lower;
+
+  let local = lower.slice(0, at);
+  const domain = lower.slice(at + 1);
+
+  const plus = local.indexOf("+");
+  if (plus >= 0) local = local.slice(0, plus);
+
+  if (domain === "gmail.com" || domain === "googlemail.com") {
+    return `${local.replace(/\./g, "")}@gmail.com`;
+  }
+  return `${local}@${domain}`;
+}

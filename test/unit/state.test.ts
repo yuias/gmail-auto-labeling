@@ -73,6 +73,25 @@ describe("buildState", () => {
     expect(state.to_me_directly).toBe(true);
   });
 
+  it("matches plus-addressed, dotted, and googlemail variants of the self address", () => {
+    const variants = ["me+shop@gmail.com", "m.e@gmail.com", "me@googlemail.com"];
+    for (const variant of variants) {
+      const message = makeMessage({ headers: [{ name: "To", value: variant }], text: "x" });
+      const state = buildState(message, { selfAddress: "me@gmail.com", maxChars: 8000 });
+      expect(state.to_me_directly).toBe(true);
+    }
+  });
+
+  it("does not match a different address or a dotted local part outside Gmail", () => {
+    const others = ["someone@gmail.com", "m.e@example.com"];
+    for (const other of others) {
+      const message = makeMessage({ headers: [{ name: "To", value: other }], text: "x" });
+      const selfForDomain = other.endsWith("@gmail.com") ? "me@gmail.com" : "me@example.com";
+      const state = buildState(message, { selfAddress: selfForDomain, maxChars: 8000 });
+      expect(state.to_me_directly).toBe(false);
+    }
+  });
+
   it("is false when the self address is only in Cc", () => {
     const message = makeMessage({
       headers: [

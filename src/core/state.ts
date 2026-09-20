@@ -3,6 +3,7 @@ import {
   extractBody,
   getHeader,
   htmlToText,
+  normalizeAddress,
   normalizeWhitespace,
   parseAddress,
   parseAddressList,
@@ -21,8 +22,8 @@ export function buildState(
   const from = fromHeader ? parseAddress(fromHeader) : { name: null, address: null, domain: null };
 
   const toHeader = getHeader(headers, "To");
-  const toAddresses = toHeader ? parseAddressList(toHeader) : [];
-  const to_me_directly = toAddresses.includes(opts.selfAddress.toLowerCase());
+  const toAddresses = toHeader ? parseAddressList(toHeader).map(normalizeAddress) : [];
+  const to_me_directly = toAddresses.includes(normalizeAddress(opts.selfAddress));
 
   const gmail_category = (message.labelIds ?? []).find((id) => id.startsWith("CATEGORY_")) ?? null;
 
