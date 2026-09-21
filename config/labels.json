@@ -53,8 +53,8 @@
       "ads": {
         "label": "ads",
         "criteria": {
-          "focus": "Promotional or marketing mail the sender chose to send: sales, campaigns, coupons, points offers, newsletters whose purpose is to promote products or services, bulk product announcements, re-engagement mail.",
-          "not_for": "Transactional mail (receipts, shipping, bookings) even when it has a promotional footer; personal mail; account security notices; service status notices; alerts that report a match to a condition the recipient set up, such as saved-search results, registered property or listing criteria, watchlist, stock and price alerts, and new-arrival or restock notices for a seller, shop, circle, or artist the recipient follows, even when the alert lists products, prices, and links to buy.",
+          "focus": "Promotional or marketing mail the sender chose to send: sales, campaigns, coupons, points offers, newsletters whose purpose is to sell the sender's own or an affiliated party's products or services, bulk product announcements, re-engagement mail.",
+          "not_for": "Transactional mail (receipts, shipping, bookings) even when it has a promotional footer; personal mail; account security notices; service status notices; alerts that report a match to a condition the recipient set up, such as saved-search results, registered property or listing criteria, watchlist, stock and price alerts, and new-arrival or restock notices for a seller, shop, circle, or artist the recipient follows, even when the alert lists products, prices, and links to buy; editorial mail whose content is news, commentary, summaries, curated links, or updates about third parties, and which sells nothing of the sender's own, such as news digests, industry roundups, blog and community digests, research summaries, and project or campaign progress updates, even when it is a subscribed bulk newsletter carrying an unsubscribe link.",
           "examples": [
             "50% off this weekend only",
             "New arrivals you will love",
@@ -66,7 +66,7 @@
       },
       "other": {
         "label": null,
-        "criteria": "None of the above: personal mail, account and security notices, password resets, social notifications, system and service messages, alerts the recipient asked for by registering a search, a listing condition, or a seller or circle to follow (new matching items, new listings, restocks, price or stock changes), and anything that does not fit a category."
+        "criteria": "None of the above: personal mail, account and security notices, password resets, social notifications, system and service messages, alerts the recipient asked for by registering a search, a listing condition, or a seller or circle to follow (new matching items, new listings, restocks, price or stock changes), subscribed editorial newsletters and digests that report or summarize news about third parties rather than sell the sender's own products, and anything that does not fit a category."
       }
     }
   },
