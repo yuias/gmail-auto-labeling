@@ -253,7 +253,7 @@ startup:
 ```json
 {
   "model": "jev-latest",
-  "body": { "maxChars": 8000 },
+  "body": { "maxChars": 2000 },
   "category": {
     "instructions": "...",
     "maxLabels": 2,

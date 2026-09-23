@@ -1,7 +1,7 @@
 {
   "model": "jev-latest",
   "body": {
-    "maxChars": 8000
+    "maxChars": 2000
   },
   "category": {
     "instructions": "Classify this email into the single category that best describes its main purpose. The state holds the subject, the sender, header-derived bulk-mail signals, and a plain-text body that may be truncated. The mail may be in Japanese or another language; judge by purpose, not by language. Transactional mail often carries a promotional footer; classify by the main purpose, not the footer. Choose 'other' when none of the categories fits.",
