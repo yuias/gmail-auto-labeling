@@ -1,6 +1,7 @@
 {
   "name": "gmail-auto-labeling",
   "private": true,
+  "license": "0BSD",
   "type": "module",
   "engines": {
     "node": ">=20"

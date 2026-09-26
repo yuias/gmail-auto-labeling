@@ -98,3 +98,7 @@ Nothing further to run day to day: the Worker's cron trigger renews the Gmail
 watch and catches up on any missed history once a day, and pushed
 notifications label mail as it arrives. Redeploy (`pnpm deploy`) after
 changing `config/labels.json` or any source file.
+
+## License
+
+[Zero-Clause BSD (0BSD)](LICENSE)
